@@ -1,10 +1,13 @@
 import React, {Suspense, useCallback} from 'react';
 import {Switch, Route, Redirect} from 'react-router-dom';
-import {CircularProgress, Backdrop, makeStyles} from '@material-ui/core';
+import {LinearProgress, makeStyles} from '@material-ui/core';
 import Header from './Header';
 import Menu from './Menu';
 
 const AsyncClientesPage = React.lazy(() => import('./Pages/Clients'));
+const AsyncWorkTypesPage = React.lazy(() => import('./Pages/WorkTypes'));
+//const AsyncGastosPage = React.lazy(() => import('./Pages/Spends'));
+//const AsyncIngresosPage = React.lazy(() => import('./Pages/Ingress'));
 
 const useStyles = makeStyles(theme => ({
     backdrop: {
@@ -22,6 +25,7 @@ const Core = props => {
     const openMenu = useCallback(() => setMenuOpen(true), []);
     const closeMenu = useCallback(() => setMenuOpen(false), []);
 
+    const Progress = <LinearProgress color='secondary' />;
 
     return (
         <>
@@ -30,13 +34,33 @@ const Core = props => {
             <Switch>
                 <Route path={'/clientes'} render={
                     () => {
-                        return <Suspense fallback={
-                            <Backdrop unmountOnExit open className={classes}>
-                                <CircularProgress />
-                            </Backdrop>
-                        }><AsyncClientesPage /></Suspense>    
+                        return <Suspense fallback={Progress}>
+                                    <AsyncClientesPage />
+                                </Suspense>    
                     }
                 } />
+                <Route path={'/tipotrabajos'} render={
+                    () => {
+                        return <Suspense fallback={Progress}>
+                                    <AsyncWorkTypesPage />
+                                </Suspense>    
+                    }
+                } />    
+                {/*<Route path={'/gastos'} render={
+                    () => {
+                        return <Suspense fallback={Progress}>
+                                    <AsyncWorkTypesPage />
+                                </Suspense>    
+                    }
+                } />    
+                <Route path={'/ingresos'} render={
+                    () => {
+                        return <Suspense fallback={Progress}>
+                                    <AsyncWorkTypesPage />
+                                </Suspense>    
+                    }
+                } />  */}  
+
                 <Redirect to="/" />
             </Switch>
         </>

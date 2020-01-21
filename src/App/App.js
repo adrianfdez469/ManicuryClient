@@ -31,7 +31,18 @@ const Main = () => {
                   ? <Login /> 
                   : <Core />
 
-  return AppCmp;
+  const client = new ApolloClient({
+    uri:graphQlEndPoint,
+    headers: {
+      authorization: `${loginState.token}`
+    }
+  });
+
+  return ( 
+    <ApolloProvider client={client}>
+      {AppCmp}
+    </ApolloProvider>
+  );
 
 }
 

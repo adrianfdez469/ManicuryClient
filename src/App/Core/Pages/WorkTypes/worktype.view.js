@@ -12,17 +12,15 @@ import {CustomFabButton} from '../../Generics';
 import useMessage from '../../Generics/messageAPI';
 import useProgress from '../../Generics/progressAPI';
 
-import Row from './client/clientRow.view';
-import AddClient from './addcliente.view';
-import {editClientMutation, getClients, removeClientMutation} from './clientQuerys';
+import Row from './worktype/worktypeRow.view';
+import AddWorkType from './addworktype.view';
+import {getWorkTypes, editWorkTypeMutation, removeWorkTypeMutation} from './worktypeQuerys';
 
 
 
 const useStyles = makeStyles(theme => ({
     container: {
-        padding: theme.spacing(1),       
-        //backgroundColor: theme.palette.background.paper,
-        //height: '100vh'        
+        padding: theme.spacing(1)       
     }
 }));
 
@@ -32,34 +30,35 @@ const GridItem = props => {
             </Grid>
 };
 
-const ClienteCmp = props => {
+const WorkTypeCmp = props => {
 
     const classes = useStyles();
     const [openAdd, setOpenAdd] = React.useState(false);
-    const [editClient, setEditClient] = React.useState(null);
-    const {data, loading, refetch} = useQuery(getClients);
+    const [editWorktype, setEditWorktype] = React.useState(null);
+    const {data, loading, refetch} = useQuery(getWorkTypes);
     
-    const [fnSave] = useMutation(editClientMutation);
-    const [fnRemove] = useMutation(removeClientMutation);
+    const [fnSave] = useMutation(editWorkTypeMutation);
+    const [fnRemove] = useMutation(removeWorkTypeMutation);
     const [Message, setMessage] = useMessage();
     const [Progress, setShowProgress] = useProgress();
 
 
     
 
-    const saveClient = (clientId, nombre, telefono, direccion) => {
+    const saveWorktype = (workTypeId, name, price) => {
         setOpenAdd(false);
         setShowProgress(true);
+        
         fnSave({
             variables: {
-                clientId, nombre, telefono, direccion
+                workTypeId, name, price
             }
         })
         .then(resp => {
-            if(!resp.data.upsertClient.success)
+            if(!resp.data.upsertWorkType.success)
                 return new Error();
             else{
-                setMessage("El cliente ha sido guardado.", "success");
+                setMessage("El tipo de trabajo ha sido guardado.", "success");
                 setShowProgress(false);
             }
         })
@@ -68,21 +67,21 @@ const ClienteCmp = props => {
         })
         .catch(err => {
             console.log(err);
-            setMessage("Ha ocurreido un error. No se ha podido salvar el cliente.", "error");
+            setMessage("Ha ocurreido un error. No se ha podido guardar el tipo de trabajo.", "error");
             setShowProgress(false);            
         });
     };
 
-    const removeClient = clientId => {
+    const removeWorktype = workTypeId => {
         setShowProgress(true);
         fnRemove({variables:{
-            clientId
+            workTypeId
         }})
         .then(resp => {
-            if(!resp.data.removeClient.success)
+            if(!resp.data.removeWorkType.success)
                 return new Error();
             else
-                setMessage("El cliente ha sido eliminado.", "success"); 
+                setMessage("El tipo de trabajo ha sido eliminado.", "success"); 
                 setShowProgress(false);
         })
         .then(() => {
@@ -90,7 +89,7 @@ const ClienteCmp = props => {
         })
         .catch(err => {
             console.log(err);
-            setMessage("Ocurrio un error eliminando el cliente.", "error");
+            setMessage("Ocurrio un error eliminando el tipo de trabajo.", "error");
             setShowProgress(false);            
         });
     };
@@ -109,14 +108,14 @@ const ClienteCmp = props => {
             <Container maxWidth="md" className={classes.container}>
                 
                 <Grid container spacing={2}>
-                    {data && data.clients && data.clients.client.map(cli => {
-                        return <GridItem key={cli.id}>
+                    {data && data.worktypes && data.worktypes.worktype.map(wt => {
+                        return <GridItem key={wt.id}>
                                     <Row
-                                        client={cli}
-                                        remove={() => removeClient(cli.id)}
+                                        worktype={wt}
+                                        remove={() => removeWorktype(wt.id)}
                                         edit={() => {
                                             setOpenAdd(true);
-                                            setEditClient(cli);
+                                            setEditWorktype(wt);
                                         }}
                                     />
                                 </GridItem>
@@ -125,22 +124,20 @@ const ClienteCmp = props => {
                 <CustomFabButton onClick={() => setOpenAdd(true)}/>
                 
             </Container>
-            <AddClient 
+            <AddWorkType 
                 open={openAdd} 
                 handleCancel={() => {
                     setOpenAdd(false);
-                    setEditClient(null);
+                    setEditWorktype(null);
                 }} 
-                handleOk={ (clientId, nombre, telefono, direccion) => {
-                    saveClient(clientId, nombre, telefono, direccion);
+                handleOk={ (id, name, price) => {
+                    saveWorktype(id, name, price);
                     setOpenAdd(false);
-                    setEditClient(null);
+                    setEditWorktype(null);
                 }} 
-                edit={editClient}
-                
-            />
+                edit={editWorktype}/>
             {Message}
     </>
 
 }
-export default ClienteCmp;
+export default WorkTypeCmp;
