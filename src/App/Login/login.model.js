@@ -84,16 +84,12 @@ const useAsyncDispacher = dispacher => {
     const [queryDispatcher, results] = useLazyQuery(LoginQuery);
     
     useEffect(() => {
-        console.log('effect');
-        console.log(results);
         
         if(results.loading){
-            console.log('loading');
             dispacher({
                 type: loginActions.START_LOGIN
             });
         } else if((results.error && !results.loading)){
-            console.log('error');
             dispacher({
                 type: loginActions.ERROR_LOGIN
             });
@@ -116,10 +112,8 @@ const useAsyncDispacher = dispacher => {
 
 
     return action => {
-        console.log('entra a aki');
         
         if(action.type === loginActions.TRY_LOGIN){
-            console.log('ejecuta metodo');
             
             queryDispatcher({
                 variables: {

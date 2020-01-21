@@ -37,7 +37,7 @@ const ClienteCmp = props => {
     const classes = useStyles();
     const [openAdd, setOpenAdd] = React.useState(false);
     const [editClient, setEditClient] = React.useState(null);
-    const {data, loading, refetch} = useQuery(getClients);
+    const {data, loading, refetch, error} = useQuery(getClients, );
     
     const [fnSave] = useMutation(editClientMutation);
     const [fnRemove] = useMutation(removeClientMutation);
@@ -67,7 +67,7 @@ const ClienteCmp = props => {
             refetch();
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             setMessage("Ha ocurreido un error. No se ha podido salvar el cliente.", "error");
             setShowProgress(false);            
         });
@@ -89,7 +89,7 @@ const ClienteCmp = props => {
             refetch();
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             setMessage("Ocurrio un error eliminando el cliente.", "error");
             setShowProgress(false);            
         });
@@ -102,6 +102,13 @@ const ClienteCmp = props => {
         else
             setShowProgress(false);
     }, [loading, setShowProgress]);
+
+    useEffect(() => {
+        if(error){
+            //console.log(error);
+            setMessage("Ocurrio un error al intentar cargar los datos.", "error");
+        }
+    }, [error, setMessage]);
 
     return <>
         {Progress}

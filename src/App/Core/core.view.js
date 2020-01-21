@@ -1,6 +1,6 @@
 import React, {Suspense, useCallback} from 'react';
 import {Switch, Route, Redirect} from 'react-router-dom';
-import {LinearProgress, makeStyles} from '@material-ui/core';
+import {LinearProgress} from '@material-ui/core';
 import Header from './Header';
 import Menu from './Menu';
 
@@ -9,16 +9,7 @@ const AsyncWorkTypesPage = React.lazy(() => import('./Pages/WorkTypes'));
 //const AsyncGastosPage = React.lazy(() => import('./Pages/Spends'));
 //const AsyncIngresosPage = React.lazy(() => import('./Pages/Ingress'));
 
-const useStyles = makeStyles(theme => ({
-    backdrop: {
-      zIndex: theme.zIndex.drawer + 1,
-      color: '#fff',
-    },
-  }));
-
 const Core = props => {
-
-    const classes = useStyles();
 
     const [openMenuState, setMenuOpen] = React.useState();
 

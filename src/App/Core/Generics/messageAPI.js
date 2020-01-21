@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useCallback} from 'react';
 
 import clsx from 'clsx';
 
@@ -57,7 +57,6 @@ const MySnackbarContentWrapper = (props) => {
   
     return (
       <SnackbarContent
-        autoHideDuration={7000}
         className={clsx(classes[variant], className)}
         aria-describedby="client-snackbar"
         message={
@@ -76,7 +75,7 @@ const MySnackbarContentWrapper = (props) => {
     );
 }
 
-const Message = props => {
+const Message = React.memo(props => {
 
     const {
         message,
@@ -87,30 +86,28 @@ const Message = props => {
 
     return <Snackbar
             anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-            //autoHideDuration={6000}
             open={open}
             onClose={handleClose}
+            autoHideDuration={7000}
       >
         <MySnackbarContentWrapper
             onClose={handleClose}
             variant={variant}
             message={message}
-            
-
         />
       </Snackbar>
-}
+});
 
 const useMessage = () => {
 
     const initialState = {open: false, message: null, variant: 'success'};
     const [state, setState] = useState(initialState);
 
-    const setMessage = (msg, variant = "success") => {
+    const setMessage = useCallback((msg, variant = "success") => {
         if(msg && msg !== ''){
             setState({open: true, message: msg, variant: variant});
         }
-    };
+    }, [setState]);
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {

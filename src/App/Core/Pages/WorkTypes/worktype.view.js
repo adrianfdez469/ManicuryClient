@@ -35,14 +35,12 @@ const WorkTypeCmp = props => {
     const classes = useStyles();
     const [openAdd, setOpenAdd] = React.useState(false);
     const [editWorktype, setEditWorktype] = React.useState(null);
-    const {data, loading, refetch} = useQuery(getWorkTypes);
+    const {data, loading, refetch, error} = useQuery(getWorkTypes);
     
     const [fnSave] = useMutation(editWorkTypeMutation);
     const [fnRemove] = useMutation(removeWorkTypeMutation);
     const [Message, setMessage] = useMessage();
     const [Progress, setShowProgress] = useProgress();
-
-
     
 
     const saveWorktype = (workTypeId, name, price) => {
@@ -66,7 +64,7 @@ const WorkTypeCmp = props => {
             refetch();
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             setMessage("Ha ocurreido un error. No se ha podido guardar el tipo de trabajo.", "error");
             setShowProgress(false);            
         });
@@ -88,7 +86,7 @@ const WorkTypeCmp = props => {
             refetch();
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             setMessage("Ocurrio un error eliminando el tipo de trabajo.", "error");
             setShowProgress(false);            
         });
@@ -101,6 +99,13 @@ const WorkTypeCmp = props => {
         else
             setShowProgress(false);
     }, [loading, setShowProgress]);
+
+    useEffect(() => {
+        if(error){
+            //console.log(error);
+            setMessage("Ocurrio un error al intentar cargar los datos.", "error");
+        }
+    }, [error, setMessage]);
 
     return <>
         {Progress}

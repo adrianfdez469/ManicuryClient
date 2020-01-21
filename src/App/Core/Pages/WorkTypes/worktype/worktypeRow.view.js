@@ -3,8 +3,6 @@ import {
     Card,
     CardHeader,
     Avatar,
-    CardContent,
-    Typography,
     Menu,
     MenuItem,
     IconButton,
@@ -16,7 +14,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import { red, green } from '@material-ui/core/colors';
+import { green } from '@material-ui/core/colors';
 
 const useRowStyles = makeStyles(theme => ({
     card: {
