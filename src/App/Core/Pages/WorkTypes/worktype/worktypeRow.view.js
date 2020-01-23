@@ -88,7 +88,7 @@ const Row = props => {
                 </IconButton>
             }
             title={worktype.name}
-            subheader={worktype.price}
+            subheader={`$${worktype.price}`}
             />      
         </Card>
         {Actions}
