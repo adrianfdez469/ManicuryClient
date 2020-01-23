@@ -8,6 +8,7 @@ import {
     Button
 } from '@material-ui/core';
 
+import NumberInput from '../../Generics/numberInput.view';
 import useWorktype from './useWorktype';
 
 const AddWorkType = props => {
@@ -49,13 +50,10 @@ const AddWorkType = props => {
                         onChange={event => setName(event.target.value)}
                         
                     />
-                    <TextField
-                        margin="dense"
-                        label="Precio"
-                        type="text"
-                        fullWidth
+                    <NumberInput 
+                        handleChange={event => setPrice(+event.target.value)}
                         value={priceState}
-                        onChange={event => setPrice(+event.target.value)}
+                        label="Precio"
                     />
                 </DialogContent>
                 <DialogActions>
