@@ -8,29 +8,29 @@ import {
     Button
 } from '@material-ui/core';
 
-import {NumberInput} from '../../Generics';
-import useWorktype from './useWorktype';
+import useClient from './useClient';
 
-const AddWorkType = props => {
+const AddClient = props => {
 
     const {handleOk, handleCancel, open, edit} = props;
 
-    const {useNameState, usePriceState} = useWorktype();
-    
+    const {useAddressState, useNameState, usePhoneState} = useClient();
+    const [addressState, setAddress] = useAddressState;
     const [nameState, setName] = useNameState;
-    const [priceState, setPrice] = usePriceState;
+    const [phoneState, setPhone] = usePhoneState;
     
-
     React.useEffect(() => {
         if(edit){
+            setAddress(edit.address);
             setName(edit.name);
-            setPrice(edit.price);
-        }else{
+            setPhone(edit.phone);
+        }else {
+            setAddress('');
             setName('');
-            setPrice(0);
-        }
+            setPhone('');
+        };
 
-    }, [open, edit, setName, setPrice]);
+    }, [open, edit, setName ,setPhone, setAddress]);
 
     
     return <Dialog 
@@ -38,7 +38,7 @@ const AddWorkType = props => {
                 onClose={handleCancel} 
                 aria-labelledby="form-dialog-title"
             >
-                <DialogTitle id="form-dialog-title">Adicionar tipo de trabajo</DialogTitle>
+                <DialogTitle id="form-dialog-title">Adicionar cliente</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -50,10 +50,21 @@ const AddWorkType = props => {
                         onChange={event => setName(event.target.value)}
                         
                     />
-                    <NumberInput 
-                        handleChange={event => setPrice(+event.target.value)}
-                        value={priceState}
-                        label="Precio"
+                    <TextField
+                        margin="dense"
+                        label="Teléfono"
+                        type="text"
+                        fullWidth
+                        value={phoneState}
+                        onChange={event => setPhone(event.target.value)}
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Dirección"
+                        type="text"
+                        fullWidth
+                        value={addressState}
+                        onChange={event => setAddress(event.target.value)}
                     />
                 </DialogContent>
                 <DialogActions>
@@ -63,13 +74,12 @@ const AddWorkType = props => {
                 <Button onClick={() => handleOk( 
                                             (edit) && edit.id,
                                             nameState, 
-                                            priceState)
-                                } 
-                color="primary">
+                                            phoneState, 
+                                            addressState)} color="primary">
                     Guardar
                 </Button>
                 </DialogActions>
             </Dialog>;
 
 }
-export default AddWorkType;
+export default AddClient;

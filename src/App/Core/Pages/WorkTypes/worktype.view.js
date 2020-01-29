@@ -6,11 +6,11 @@ import {
     Grid,
     makeStyles    
 } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
+import SearchIcon from '@material-ui/icons/Search';
 
-import {CustomFabButton} from '../../Generics';
 
-import useMessage from '../../Generics/messageAPI';
-import useProgress from '../../Generics/progressAPI';
+import {OpenIconSpeedDial, useMessage, useProgress} from '../../Generics';
 
 import Row from './worktype/worktypeRow.view';
 import AddWorkType from './addworktype.view';
@@ -126,7 +126,17 @@ const WorkTypeCmp = props => {
                                 </GridItem>
                     })}                    
                 </Grid>
-                <CustomFabButton onClick={() => setOpenAdd(true)}/>
+                <OpenIconSpeedDial actions={
+                     [{
+                        icon: <AddIcon />,
+                        name: "Adicionar cliente", 
+                        onClick:() => setOpenAdd(true)
+                    },{
+                        icon: <SearchIcon />,
+                        name: "Buscar cliente",
+                        onClick:() => alert("TODO: Buscar tipo de trabajo")
+                    }]
+                }/>
                 
             </Container>
             <AddWorkType 

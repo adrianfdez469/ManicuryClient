@@ -130,4 +130,4 @@ const useMessage = () => {
     return [cmpMsg, setMessage];
 
 }
-export default useMessage;
+export {useMessage};
