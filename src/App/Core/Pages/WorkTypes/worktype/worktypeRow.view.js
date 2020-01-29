@@ -8,7 +8,8 @@ import {
     IconButton,
     ListItemIcon,
     ListItemText,
-    makeStyles
+    makeStyles,
+    Tooltip
 } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
@@ -19,7 +20,11 @@ import { green } from '@material-ui/core/colors';
 const useRowStyles = makeStyles(theme => ({
     card: {
         maxWidth: 345,
-        height: 150         
+        height: 70,
+        cursor: 'pointer',
+        '&:hover': {
+            boxShadow: '0px 5px 10px -1px rgba(0,0,0,0.3), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0 ,0,0,0.12)'
+        }          
     },
     cardHeader: {
         overflow: 'auto'
@@ -74,23 +79,25 @@ const Row = props => {
         </Menu>
     );
 
-    return <>        
-        <Card className={classes.card}>
-            <CardHeader
-            avatar={
-                <Avatar aria-label="recipe" className={classes.avatar}>
-                    {worktype.name[0]}
-                </Avatar>
-            }
-            action={
-                <IconButton aria-label="settings" onClick={openMenu}>
-                    <MoreVertIcon />
-                </IconButton>
-            }
-            title={worktype.name}
-            subheader={`$${worktype.price}`}
-            />      
-        </Card>
+    return <>    
+        <Tooltip title={worktype.name}>
+            <Card className={classes.card}>
+                <CardHeader
+                avatar={
+                    <Avatar aria-label="recipe" className={classes.avatar}>
+                        {worktype.name[0]}
+                    </Avatar>
+                }
+                action={
+                    <IconButton aria-label="settings" onClick={openMenu}>
+                        <MoreVertIcon />
+                    </IconButton>
+                }
+                title={worktype.name}
+                subheader={`$${worktype.price}`}
+                />      
+            </Card>
+        </Tooltip>    
         {Actions}
     </>
     ;

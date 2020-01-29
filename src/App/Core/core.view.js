@@ -6,7 +6,7 @@ import Menu from './Menu';
 
 const AsyncClientesPage = React.lazy(() => import('./Pages/Clients'));
 const AsyncWorkTypesPage = React.lazy(() => import('./Pages/WorkTypes'));
-//const AsyncGastosPage = React.lazy(() => import('./Pages/Spends'));
+const AsyncGastosPage = React.lazy(() => import('./Pages/Spends'));
 //const AsyncIngresosPage = React.lazy(() => import('./Pages/Ingress'));
 
 const Core = props => {
@@ -37,17 +37,17 @@ const Core = props => {
                                 </Suspense>    
                     }
                 } />    
-                {/*<Route path={'/gastos'} render={
+                <Route path={'/gastos'} render={
                     () => {
                         return <Suspense fallback={Progress}>
-                                    <AsyncWorkTypesPage />
+                                    <AsyncGastosPage />
                                 </Suspense>    
                     }
                 } />    
-                <Route path={'/ingresos'} render={
+                {/*<Route path={'/ingresos'} render={
                     () => {
                         return <Suspense fallback={Progress}>
-                                    <AsyncWorkTypesPage />
+                                    <AsyncIngresosPage />
                                 </Suspense>    
                     }
                 } />  */}  
