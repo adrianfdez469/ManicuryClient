@@ -12,4 +12,4 @@ const useProgress = () => {
     return [ProgressElement, setShow];
 }
 
-export default useProgress;
+export {useProgress};

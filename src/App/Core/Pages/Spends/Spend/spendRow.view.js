@@ -2,7 +2,8 @@ import React from 'react';
 import {
     Card,
     CardHeader,
-    Avatar,
+    CardContent,
+    Typography,
     Menu,
     MenuItem,
     IconButton,
@@ -15,28 +16,30 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import { green } from '@material-ui/core/colors';
+import { red } from '@material-ui/core/colors';
+
+import {getStringDate} from '../../../Generics';
 
 const useRowStyles = makeStyles(theme => ({
     card: {
         maxWidth: 345,
-        height: 70,
+        height: 170,
         cursor: 'pointer',
         '&:hover': {
             boxShadow: '0px 5px 10px -1px rgba(0,0,0,0.3), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0 ,0,0,0.12)'
-        }          
+        },
     },
     cardHeader: {
         overflow: 'auto'
     },
     avatar: {
-        backgroundColor: green[500]
+        backgroundColor: red[500]
     }
 }));
   
 const Row = props => {
 
-    const {worktype, remove, edit} = props;
+    const {spend, remove, edit} = props;
     const classes = useRowStyles();
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -80,22 +83,23 @@ const Row = props => {
     );
 
     return <>    
-        <Tooltip title={worktype.name}>
+        <Tooltip title={spend.spendtype}>
             <Card className={classes.card}>
                 <CardHeader
-                avatar={
-                    <Avatar aria-label="recipe" className={classes.avatar}>
-                        {worktype.name[0]}
-                    </Avatar>
-                }
-                action={
-                    <IconButton aria-label="settings" onClick={openMenu}>
-                        <MoreVertIcon />
-                    </IconButton>
-                }
-                title={worktype.name}
-                subheader={`$${worktype.price}`}
-                />      
+                    action={
+                        <IconButton aria-label="settings" onClick={openMenu}>
+                            <MoreVertIcon />
+                        </IconButton>
+                    }
+                    title={`-$${spend.spendamount}`}
+                    
+                    subheader={getStringDate(spend.date)}
+                />
+                <CardContent className={classes.cardContent}>
+                    <Typography variant="h6" color="textSecondary" component="p" style={{position:'static'}}>
+                        {spend.spendtype}
+                    </Typography>
+                </CardContent>            
             </Card>
         </Tooltip>    
         {Actions}

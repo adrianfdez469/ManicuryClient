@@ -11,17 +11,15 @@ import SearchIcon from '@material-ui/icons/Search';
 
 import {OpenIconSpeedDial, useMessage, useProgress} from '../../Generics';
 
-import Row from './client/clientRow.view';
-import AddClient from './addcliente.view';
-import {editClientMutation, getClients, removeClientMutation} from './clientQuerys';
+import Row from './Spend/spendRow.view';
+import AddSpend from './addSpend.view';
+import {getSpends, editSpendMutation, removeSpendMutation} from './spendQuerys';
 
 
 
 const useStyles = makeStyles(theme => ({
     container: {
-        padding: theme.spacing(1),       
-        //backgroundColor: theme.palette.background.paper,
-        //height: '100vh'        
+        padding: theme.spacing(1)        
     }
 }));
 
@@ -31,34 +29,35 @@ const GridItem = props => {
             </Grid>
 };
 
-const ClienteCmp = props => {
+const SpendCmp = props => {
 
     const classes = useStyles();
     const [openAdd, setOpenAdd] = React.useState(false);
-    const [editClient, setEditClient] = React.useState(null);
-    const {data, loading, refetch, error} = useQuery(getClients, );
     
-    const [fnSave] = useMutation(editClientMutation);
-    const [fnRemove] = useMutation(removeClientMutation);
+    const [editSpend, setEditSpend] = React.useState(null);
+    const {data, loading, refetch, error} = useQuery(getSpends);
+    
+    const [fnSave] = useMutation(editSpendMutation);
+    const [fnRemove] = useMutation(removeSpendMutation);
     const [Message, setMessage] = useMessage();
     const [Progress, setShowProgress] = useProgress();
 
 
     
 
-    const saveClient = (clientId, nombre, telefono, direccion) => {
+    const saveSpend = (spendId, spendtype, spendammount, date) => {
         setOpenAdd(false);
         setShowProgress(true);
         fnSave({
             variables: {
-                clientId, nombre, telefono, direccion
+                spendId, spendtype, spendammount, date
             }
         })
         .then(resp => {
-            if(!resp.data.upsertClient.success)
+            if(!resp.data.upsertSpend.success)
                 return new Error();
             else{
-                setMessage("El cliente ha sido guardado.", "success");
+                setMessage("El gasto ha sido guardado.", "success");
                 setShowProgress(false);
             }
         })
@@ -66,22 +65,21 @@ const ClienteCmp = props => {
             refetch();
         })
         .catch(err => {
-            //console.log(err);
-            setMessage("Ha ocurreido un error. No se ha podido salvar el cliente.", "error");
+            setMessage("Ha ocurreido un error. No se ha podido salvar el gasto.", "error");
             setShowProgress(false);            
         });
     };
 
-    const removeClient = clientId => {
+    const removeSpend = spendId => {
         setShowProgress(true);
         fnRemove({variables:{
-            clientId
+            spendId
         }})
         .then(resp => {
-            if(!resp.data.removeClient.success)
+            if(!resp.data.removeSpend.success)
                 return new Error();
             else
-                setMessage("El cliente ha sido eliminado.", "success"); 
+                setMessage("El gasto ha sido eliminado.", "success"); 
                 setShowProgress(false);
         })
         .then(() => {
@@ -89,7 +87,7 @@ const ClienteCmp = props => {
         })
         .catch(err => {
             //console.log(err);
-            setMessage("Ocurrio un error eliminando el cliente.", "error");
+            setMessage("Ocurrio un error eliminando el gasto.", "error");
             setShowProgress(false);            
         });
     };
@@ -104,7 +102,6 @@ const ClienteCmp = props => {
 
     useEffect(() => {
         if(error){
-            //console.log(error);
             setMessage("Ocurrio un error al intentar cargar los datos.", "error");
         }
     }, [error, setMessage]);
@@ -115,14 +112,14 @@ const ClienteCmp = props => {
             <Container maxWidth="md" className={classes.container}>
                 
                 <Grid container spacing={2}>
-                    {data && data.clients && data.clients.client.map(cli => {
-                        return <GridItem key={cli.id}>
+                    {data && data.spends && data.spends.spend.map(spend => {
+                        return <GridItem key={spend.id}>
                                     <Row
-                                        client={cli}
-                                        remove={() => removeClient(cli.id)}
+                                        spend={spend}
+                                        remove={() => removeSpend(spend.id)}
                                         edit={() => {
                                             setOpenAdd(true);
-                                            setEditClient(cli);
+                                            setEditSpend(spend);
                                         }}
                                     />
                                 </GridItem>
@@ -131,33 +128,32 @@ const ClienteCmp = props => {
                 <OpenIconSpeedDial actions={
                     [{
                         icon: <AddIcon />,
-                        name: "Adicionar cliente", 
-                        onClick:() => setOpenAdd(true)
+                        name: "Adicionar gasto",
+                        onClick: () => setOpenAdd(true)
                     },{
                         icon: <SearchIcon />,
-                        name: "Buscar cliente",
-                        onClick:() => alert("TODO: Buscar cliente")
+                        name: "Buscar gasto",
+                        onClick: () => alert("Abrir interfaz para buscar gasto")
                     }]
                 }/>
-
                 
             </Container>
-            <AddClient 
+            <AddSpend
                 open={openAdd} 
                 handleCancel={() => {
                     setOpenAdd(false);
-                    setEditClient(null);
+                    setEditSpend(null);
                 }} 
-                handleOk={ (clientId, nombre, telefono, direccion) => {
-                    saveClient(clientId, nombre, telefono, direccion);
+                handleOk={ (spendId, spendtype, spendammount, date) => {
+                    saveSpend(spendId, spendtype, spendammount, date);
                     setOpenAdd(false);
-                    setEditClient(null);
+                    setEditSpend(null);
                 }} 
-                edit={editClient}
+                edit={editSpend}
                 
             />
             {Message}
     </>
 
 }
-export default ClienteCmp;
+export default SpendCmp;

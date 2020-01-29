@@ -54,4 +54,4 @@ NumberInput.propTypes = {
     label: PropTypes.string
 }
 
-export default NumberInput;
+export {NumberInput};
