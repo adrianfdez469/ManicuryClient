@@ -1,8 +1,8 @@
 import React from 'react';
+
 import {
     Card,
     CardHeader,
-    Avatar,
     CardContent,
     Typography,
     Menu,
@@ -17,31 +17,29 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import { red } from '@material-ui/core/colors';
+import {getStringDate} from '../../../Generics';
 
 const useRowStyles = makeStyles(theme => ({
     card: {
         maxWidth: 345,
-        height: 150,
+        height: 200,
         cursor: 'pointer',
         '&:hover': {
             boxShadow: '0px 5px 10px -1px rgba(0,0,0,0.3), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0 ,0,0,0.12)'
-        }         
+        },
     },
     cardHeader: {
         overflow: 'auto'
-    },
-    avatar: {
-        backgroundColor: red[500]
     }
 }));
   
 const Row = props => {
 
-    const {client, remove, edit} = props;
+    const {ingress, remove, edit} = props;
     const classes = useRowStyles();
 
     const [anchorEl, setAnchorEl] = React.useState(null);
+
     const openMenu = event => {
         setAnchorEl(event.target);
     }
@@ -81,30 +79,36 @@ const Row = props => {
         </Menu>
     );
 
-    return <>      
-        <Tooltip title={client.name}>
-        <Card className={classes.card}>
-            <CardHeader
-            avatar={
-                <Avatar aria-label="recipe" className={classes.avatar}>
-                    {client.name[0]}
-                </Avatar>
-            }
-            action={
-                <IconButton aria-label="settings" onClick={openMenu}>
-                    <MoreVertIcon />
-                </IconButton>
-            }
-            title={client.name}
-            subheader={client.phone}
-            />
-            <CardContent>
-            <Typography variant="body2" color="textSecondary" component="p">
-                {client.address}
-            </Typography>
-            </CardContent>            
-        </Card>
-        </Tooltip>  
+    return <>    
+        <Tooltip title={ingress.workType.name}>
+            <Card className={classes.card}>
+                <CardHeader
+                    action={
+                        <IconButton aria-label="settings" onClick={openMenu}>
+                            <MoreVertIcon />
+                        </IconButton>
+                    }
+                    title={`${ingress.workType.name}`}
+                    
+                    subheader={getStringDate(ingress.date)}
+                />
+                <CardContent className={classes.cardContent}>
+                    <Typography variant="subtitle1" color="textSecondary" component="p" style={{position:'static'}}>
+                        {`Ingreso: $${ingress.ingressAmount}`}
+                    </Typography>
+                    <Typography variant="subtitle1" color="textSecondary" component="p" style={{position:'static'}}>
+                        {`Propina: $${ingress.tip}`}
+                    </Typography>
+                    {
+                        ingress.client && 
+                        <Typography variant="subtitle1" color="textSecondary" component="p" style={{position:'static'}}>
+                            {`Cliente: ${ingress.client.name}`}
+                        </Typography>
+                    }
+                    
+                </CardContent>            
+            </Card>
+        </Tooltip>    
         {Actions}
     </>
     ;

@@ -1,15 +1,19 @@
 import {useState} from 'react';
 
-const useClient = () => {
+const useIngress = () => {
 
-    const useNameState = useState('');
-    const usePhoneState = useState('');
-    const useAddressState = useState('');
+    const useWorkTypeState = useState("");
+    const useClientState = useState("");
+    const useAmmountState = useState(0);
+    const useTipState = useState(0);
+    const useDateState = useState(new Date());
 
     return {
-        useNameState,
-        usePhoneState,
-        useAddressState
+        useWorkTypeState,
+        useClientState,
+        useAmmountState,
+        useTipState,
+        useDateState
     }
 }
-export default useClient;
+export default useIngress;

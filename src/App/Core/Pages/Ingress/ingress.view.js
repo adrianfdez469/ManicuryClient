@@ -11,9 +11,9 @@ import SearchIcon from '@material-ui/icons/Search';
 
 import {OpenIconSpeedDial, useMessage, useProgress} from '../../Generics';
 
-import Row from './client/clientRow.view';
-import AddClient from './addcliente.view';
-import {editClientMutation, getClients, removeClientMutation} from './clientQuerys';
+import Row from './ingress/ingressRow.view';
+import AddIngress from './addingress.view';
+import {editIngressMutation, getIngresses, removeIngressMutation} from './ingressQuerys';
 
 
 
@@ -31,34 +31,37 @@ const GridItem = props => {
             </Grid>
 };
 
-const ClienteCmp = props => {
+const IngressCmp = props => {
 
     const classes = useStyles();
     const [openAdd, setOpenAdd] = React.useState(false);
-    const [editClient, setEditClient] = React.useState(null);
-    const {data, loading, refetch, error} = useQuery(getClients, );
+    const [editIngress, setEditIngress] = React.useState(null);
+    const {data, loading, refetch, error} = useQuery(getIngresses);
     
-    const [fnSave] = useMutation(editClientMutation);
-    const [fnRemove] = useMutation(removeClientMutation);
+    const [fnSave] = useMutation(editIngressMutation);
+    const [fnRemove] = useMutation(removeIngressMutation);
     const [Message, setMessage] = useMessage();
     const [Progress, setShowProgress] = useProgress();
 
 
-    
-
-    const saveClient = (clientId, nombre, telefono, direccion) => {
+    const saveIngress = (ingressId, worktypeId, clientId, ingressAmmount, tip, date) => {
         setOpenAdd(false);
         setShowProgress(true);
         fnSave({
             variables: {
-                clientId, nombre, telefono, direccion
+                ingressId,
+                worktypeId,
+                clientId,
+                ammount: ingressAmmount,
+                tip,
+                date
             }
         })
         .then(resp => {
-            if(!resp.data.upsertClient.success)
+            if(!resp.data.upsertIngress.success)
                 return new Error();
             else{
-                setMessage("El cliente ha sido guardado.", "success");
+                setMessage("El ingreso ha sido guardado.", "success");
                 setShowProgress(false);
             }
         })
@@ -67,21 +70,21 @@ const ClienteCmp = props => {
         })
         .catch(err => {
             //console.log(err);
-            setMessage("Ha ocurreido un error. No se ha podido salvar el cliente.", "error");
+            setMessage("Ha ocurreido un error. No se ha podido salvar el ingreso.", "error");
             setShowProgress(false);            
         });
     };
 
-    const removeClient = clientId => {
+    const removeIngress = ingressId => {
         setShowProgress(true);
         fnRemove({variables:{
-            clientId
+            ingressId
         }})
         .then(resp => {
-            if(!resp.data.removeClient.success)
+            if(!resp.data.removeIngress.success)
                 return new Error();
             else
-                setMessage("El cliente ha sido eliminado.", "success"); 
+                setMessage("El ingreso ha sido eliminado.", "success"); 
                 setShowProgress(false);
         })
         .then(() => {
@@ -89,7 +92,7 @@ const ClienteCmp = props => {
         })
         .catch(err => {
             //console.log(err);
-            setMessage("Ocurrio un error eliminando el cliente.", "error");
+            setMessage("Ocurrio un error eliminando el ingreso.", "error");
             setShowProgress(false);            
         });
     };
@@ -115,14 +118,14 @@ const ClienteCmp = props => {
             <Container maxWidth="md" className={classes.container}>
                 
                 <Grid container spacing={2}>
-                    {data && data.clients && data.clients.client.map(cli => {
-                        return <GridItem key={cli.id}>
+                    {data && data.ingresses && data.ingresses.ingress.map(ingress => {
+                        return <GridItem key={ingress.id}>
                                     <Row
-                                        client={cli}
-                                        remove={() => removeClient(cli.id)}
+                                        ingress={ingress}
+                                        remove={() => removeIngress(ingress.id)}
                                         edit={() => {
                                             setOpenAdd(true);
-                                            setEditClient(cli);
+                                            setEditIngress(ingress);
                                         }}
                                     />
                                 </GridItem>
@@ -142,22 +145,22 @@ const ClienteCmp = props => {
 
                 
             </Container>
-            <AddClient 
+            <AddIngress 
                 open={openAdd} 
                 handleCancel={() => {
                     setOpenAdd(false);
-                    setEditClient(null);
+                    setEditIngress(null);
                 }} 
-                handleOk={ (clientId, nombre, telefono, direccion) => {
-                    saveClient(clientId, nombre, telefono, direccion);
+                handleOk={ (ingressId, worktypeId, clientId, ingressAmmount, tip, date) => {
+                    saveIngress(ingressId, worktypeId, clientId, ingressAmmount, tip, date);
                     setOpenAdd(false);
-                    setEditClient(null);
-                }} 
-                edit={editClient}
+                    setEditIngress(null);
+                }}
+                edit={editIngress}
                 
             />
             {Message}
     </>
 
 }
-export default ClienteCmp;
+export default IngressCmp;
