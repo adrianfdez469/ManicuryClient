@@ -4,6 +4,9 @@ import {LinearProgress} from '@material-ui/core';
 import Header from './Header';
 import Menu from './Menu';
 
+//import Charts from './Pages/Charts';
+import Dashboard from './Pages/Dashboard';
+
 const AsyncClientesPage = React.lazy(() => import('./Pages/Clients'));
 const AsyncWorkTypesPage = React.lazy(() => import('./Pages/WorkTypes'));
 const AsyncGastosPage = React.lazy(() => import('./Pages/Spends'));
@@ -23,6 +26,7 @@ const Core = props => {
             <Header setMenuOpen={openMenu}/>
             <Menu openMenuState={openMenuState} closeMenu={closeMenu}/>
             <Switch>
+                <Route path={'/'} component={Dashboard} exact/>
                 <Route path={'/clientes'} render={
                     () => {
                         return <Suspense fallback={Progress}>
