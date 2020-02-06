@@ -46,8 +46,8 @@ const AddIngress = props => {
 
     const classes = useStyles();
 
-    const {data: dataW, loadingW, refetchW, errorW} = useQuery(getWorkTypes);
-    const {data: dataC, loadingC, refetchC, errorC} = useQuery(getClients);
+    const {data: dataW} = useQuery(getWorkTypes);
+    const {data: dataC} = useQuery(getClients);
 
 
     const {useWorkTypeState, useClientState, useAmmountState, useTipState, useDateState} = useIngress();
@@ -57,11 +57,6 @@ const AddIngress = props => {
     const [tipState, setTipState] = useTipState;
     const [dateState, setDateState] = useDateState;
     
-    
-    /*const [addressState, setAddress] = useAddressState;
-    const [nameState, setName] = useNameState;
-    const [phoneState, setPhone] = usePhoneState;*/
-    
     React.useEffect(() => {
         if(edit){
             setWtState(edit.workType.id);
@@ -69,24 +64,22 @@ const AddIngress = props => {
             setAmmountState(edit.ingressAmount);
             setTipState(edit.tip);
             setDateState(edit.date);
-
-            /*setAddress(edit.address);
-            setName(edit.name);
-            setPhone(edit.phone);*/
         }else {
-
-            setWtState("");
-            setClientState("");
+            setWtState(null);
+            setClientState(null);
             setAmmountState(0);
             setTipState(0);
             setDateState(new Date());
-
-            /*setAddress('');
-            setName('');
-            setPhone('');*/
         };
 
     }, [open, edit, setWtState, setClientState, setAmmountState, setTipState, setDateState]);
+
+    const changeWorkType = event => {
+        const wtId = event.target.value;
+        const wt = dataW.worktypes.worktype.find(wt => wt.id === wtId);
+        setAmmountState(wt.price);
+        setWtState(event.target.value);
+    }
 
     return <Dialog 
                 open={open} 
@@ -102,7 +95,7 @@ const AddIngress = props => {
                             labelId="work-type"
                             id="work-type-placeholder"
                             value={wtState}
-                            onChange={event => setWtState(event.target.value)}
+                            onChange={changeWorkType}
                             displayEmpty
                             className={classes.selectEmpty}
                         >
@@ -161,7 +154,7 @@ const AddIngress = props => {
                                 disableToolbar
                                 margin="normal"
                                 variant="dialog"
-                                //format="dd/MM/yyyy"
+                                format="dd/MM/yyyy"
                                 label="Fecha"
                                 value={dateState}
                                 onChange={setDateState}

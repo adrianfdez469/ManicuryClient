@@ -56,7 +56,7 @@ const ClienteCmp = props => {
         })
         .then(resp => {
             if(!resp.data.upsertClient.success)
-                return new Error();
+                throw new Error();
             else{
                 setMessage("El cliente ha sido guardado.", "success");
                 setShowProgress(false);
@@ -79,7 +79,7 @@ const ClienteCmp = props => {
         }})
         .then(resp => {
             if(!resp.data.removeClient.success)
-                return new Error();
+                throw new Error();
             else
                 setMessage("El cliente ha sido eliminado.", "success"); 
                 setShowProgress(false);

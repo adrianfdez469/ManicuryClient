@@ -36,7 +36,9 @@ const IngressCmp = props => {
     const classes = useStyles();
     const [openAdd, setOpenAdd] = React.useState(false);
     const [editIngress, setEditIngress] = React.useState(null);
-    const {data, loading, refetch, error} = useQuery(getIngresses);
+    const {data, loading, refetch, error} = useQuery(getIngresses, {variables: {
+        start: 0, limit: 20
+    }});
     
     const [fnSave] = useMutation(editIngressMutation);
     const [fnRemove] = useMutation(removeIngressMutation);
@@ -45,7 +47,10 @@ const IngressCmp = props => {
 
 
     const saveIngress = (ingressId, worktypeId, clientId, ingressAmmount, tip, date) => {
+        console.log(clientId);
+        
         setOpenAdd(false);
+        
         setShowProgress(true);
         fnSave({
             variables: {
@@ -59,7 +64,7 @@ const IngressCmp = props => {
         })
         .then(resp => {
             if(!resp.data.upsertIngress.success)
-                return new Error();
+                throw new Error();
             else{
                 setMessage("El ingreso ha sido guardado.", "success");
                 setShowProgress(false);
@@ -82,7 +87,7 @@ const IngressCmp = props => {
         }})
         .then(resp => {
             if(!resp.data.removeIngress.success)
-                return new Error();
+                throw new Error();
             else
                 setMessage("El ingreso ha sido eliminado.", "success"); 
                 setShowProgress(false);

@@ -35,7 +35,11 @@ const SpendCmp = props => {
     const [openAdd, setOpenAdd] = React.useState(false);
     
     const [editSpend, setEditSpend] = React.useState(null);
-    const {data, loading, refetch, error} = useQuery(getSpends);
+    const {data, loading, refetch, error} = useQuery(getSpends, {
+        variables: {
+            start: 0, limit: 20
+        }
+    });
     
     const [fnSave] = useMutation(editSpendMutation);
     const [fnRemove] = useMutation(removeSpendMutation);
@@ -55,7 +59,7 @@ const SpendCmp = props => {
         })
         .then(resp => {
             if(!resp.data.upsertSpend.success)
-                return new Error();
+                throw new Error();
             else{
                 setMessage("El gasto ha sido guardado.", "success");
                 setShowProgress(false);
@@ -77,7 +81,7 @@ const SpendCmp = props => {
         }})
         .then(resp => {
             if(!resp.data.removeSpend.success)
-                return new Error();
+                throw new Error();
             else
                 setMessage("El gasto ha sido eliminado.", "success"); 
                 setShowProgress(false);

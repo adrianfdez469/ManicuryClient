@@ -16,8 +16,6 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import { red } from '@material-ui/core/colors';
-
 import {getStringDate} from '../../../Generics';
 
 const useRowStyles = makeStyles(theme => ({
@@ -31,9 +29,6 @@ const useRowStyles = makeStyles(theme => ({
     },
     cardHeader: {
         overflow: 'auto'
-    },
-    avatar: {
-        backgroundColor: red[500]
     }
 }));
   

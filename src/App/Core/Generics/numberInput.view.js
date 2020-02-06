@@ -52,6 +52,7 @@ const NumberInput = props => {
                 InputProps={{
                   inputComponent: NumberFormatCustom,
                 }}
+                onFocus={event => event.target.select()}
             />;
 
 }

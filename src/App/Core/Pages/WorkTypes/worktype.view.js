@@ -54,7 +54,7 @@ const WorkTypeCmp = props => {
         })
         .then(resp => {
             if(!resp.data.upsertWorkType.success)
-                return new Error();
+                throw new Error();
             else{
                 setMessage("El tipo de trabajo ha sido guardado.", "success");
                 setShowProgress(false);
@@ -77,7 +77,7 @@ const WorkTypeCmp = props => {
         }})
         .then(resp => {
             if(!resp.data.removeWorkType.success)
-                return new Error();
+                throw new Error();
             else
                 setMessage("El tipo de trabajo ha sido eliminado.", "success"); 
                 setShowProgress(false);

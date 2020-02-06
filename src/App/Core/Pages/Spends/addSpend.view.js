@@ -29,10 +29,6 @@ const AddSpend = props => {
     const [spendTypeState, setSpendType] = useSpendTypeState;
     const [spendAmmountState, setSpendAmmount] = useSpendAmmountState;
     const [selectedDate, setSelectedDate] = useSpendDate;
-    
-    const handleDateChange = date => {
-        setSelectedDate(date);
-      };
 
     React.useEffect(() => {
         if(edit){
@@ -70,7 +66,6 @@ const AddSpend = props => {
                         value={spendAmmountState}
                         label='Cantidad'
                     />
-                    
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>                                              
                         <Grid container >
                             <KeyboardDatePicker
@@ -80,13 +75,14 @@ const AddSpend = props => {
                                 format="dd/MM/yyyy"
                                 label="Fecha"
                                 value={selectedDate}
-                                onChange={handleDateChange}
+                                onChange={setSelectedDate}
                                 KeyboardButtonProps={{
                                     'aria-label': 'Fecha',
                                 }}
                             />
                         </Grid>
-                    </MuiPickersUtilsProvider>    
+                    </MuiPickersUtilsProvider>
+                    
                 
                 </DialogContent>
                 <DialogActions>

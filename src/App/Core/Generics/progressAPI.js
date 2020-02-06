@@ -6,8 +6,8 @@ const CustomProgress = props => {
     return show && <LinearProgress color='secondary'/>;
 }
 
-const useProgress = () => {
-    const [show, setShow] = useState(true);
+const useProgress = (initialState = true) => {
+    const [show, setShow] = useState(initialState);
     const ProgressElement = <CustomProgress show={show} />;
     return [ProgressElement, setShow];
 }
