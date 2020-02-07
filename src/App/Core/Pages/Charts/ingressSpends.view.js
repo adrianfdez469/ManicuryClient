@@ -1,144 +1,94 @@
 import "core-js";
 import React, {Component} from 'react';
-//import {} from 'react-apollo';
 import {useTheme, create} from "@amcharts/amcharts4/core";
 import {XYChart,DateAxis, ValueAxis, LineSeries, XYCursor, XYChartScrollbar} from "@amcharts/amcharts4/charts";
+import am4lang_es_ES from "@amcharts/amcharts4/lang/es_ES";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+import {resetTimeToDate} from '../../Generics'
 
 useTheme(am4themes_animated);
-/*
-const Chart = () => {
 
-    let chart = create("chartdiv", XYChart);
-    chart.hiddenState.properties.opacity = 0;
-
-    chart.data = [];
-
-        var dateAxis = chart.xAxes.push(new DateAxis());
-
-        var valueAxis = chart.yAxes.push(new ValueAxis());
-        valueAxis.tooltip.disabled = true;
-
-        var series = chart.series.push(new LineSeries());
-        series.dataFields.dateX = "date";
-        series.dataFields.openValueY = "gastos";
-        series.dataFields.valueY = "ingresos";
-        series.tooltipText = "Ingresos: {valueY.value}\nGastos: {openValueY.value}\n";
-        series.sequencedInterpolation = true;
-        series.fillOpacity = 0.3;
-        series.defaultState.transitionDuration = 1000;
-        series.tensionX = 0.8;
-
-        var series2 = chart.series.push(new LineSeries());
-        series2.dataFields.dateX = "date";
-        series2.dataFields.valueY = "gastos";
-        series2.sequencedInterpolation = true;
-        series2.defaultState.transitionDuration = 1500;
-        series2.stroke = chart.colors.getIndex(6);
-        series2.tensionX = 0.8;
-
-        chart.cursor = new XYCursor();
-        chart.cursor.xAxis = dateAxis;
-
-
-        let scrollbarX = new XYChartScrollbar();
-        scrollbarX.series.push(series);
-        scrollbarX.series.push(series2);
-        chart.scrollbarX = scrollbarX;
-
-        useEffect(() => {
-            return () => {
-                if(chart){
-                    chart.dispose();
-                }
-            }
-        })
-
-    return (
-        <div id="chartdiv" style={{ width: "100%", height: "500px" }}></div>
-      );
-};
-export default Chart;
-*/
 
 class App extends Component {
+
     componentDidMount() {
 
+      let chart = create("chartdiv", XYChart);
+      chart.language.locale = am4lang_es_ES;
+      chart.hiddenState.properties.opacity = 0;
 
-
-
-
-
-        let chart = create("chartdiv", XYChart);
-        chart.hiddenState.properties.opacity = 0;
-
-        let gastos = 100;
-        let ingresos = 250;
-        let data = [];
-
-/*
-      for (var i = 1; i < 120; i++) {
-        gastos += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 4);
-        ingresos = Math.round(gastos + Math.random() * 5 + i / 5 - (Math.random() < 0.5 ? 1 : -1) * Math.random() * 2);
-        data.push({ date: new Date(2018, 0, i), gastos: gastos, ingresos: ingresos });
-      }*/
-
-
-      data = [
         
+      const ing = this.props.dataIngresses;
 
-          {date: '2020-01-01', gastos: 0, ingresos: 1500},
-          {date: '2020-02-01', gastos: 250, ingresos: 1250},
-          {date: '2020-03-01', gastos: 0, ingresos: 1000},
-          {date: '2020-04-01', gastos: 0, ingresos: 980},
-          {date: '2020-05-01', gastos: 420, ingresos: 2678},
-          {date: '2020-06-01', gastos: 0, ingresos: 590},
-          {date: '2020-07-01', gastos: 150, ingresos: 1145},
-          {date: '2020-08-01', gastos: 0, ingresos: 2561},
-          {date: '2020-09-01', gastos: 300, ingresos: 790},
-          {date: '2020-10-01', gastos: 0, ingresos: 689},
-          {date: '2020-11-01', gastos: 500, ingresos: 1450},
-          {date: '2020-12-01', gastos: 0, ingresos: 560}
-          
-      ];
-
+      const data = ing.sort((a, b) => {
+        if(a.date > b.date) return 1;
+        if(a.date < b.date) return -1;
+        return 0;
+      })
       
+      .reduce((acumulator, value) => {
+        if(acumulator.length > 0){
+          const lastIngress = acumulator[acumulator.length-1];
+          const lastDate = new Date(lastIngress.date);
+          const lastDay = lastDate.getDate();
+          const lastMonth = lastDate.getMonth();
+          const lastYear = lastDate.getFullYear();
 
-      
-        chart.data = data;
+          const actualDate = new Date(value.date);
+          const actualDay = actualDate.getDate();
+          const actualMonth = actualDate.getMonth();
+          const actualYear = actualDate.getFullYear();
 
-        var dateAxis = chart.xAxes.push(new DateAxis());
+          if(lastDay === actualDay && lastMonth === actualMonth && lastYear === actualYear){
+            acumulator[acumulator.length - 1].ingressAmount += value.ingressAmount;
+          }else{
+            acumulator.push(value);
+          }
+          return acumulator;
+        } return [value];
 
-        var valueAxis = chart.yAxes.push(new ValueAxis());
-        valueAxis.tooltip.disabled = true;
-
-        var series = chart.series.push(new LineSeries());
-        series.dataFields.dateX = "date";
-        series.dataFields.openValueY = "gastos";
-        series.dataFields.valueY = "ingresos";
-        series.tooltipText = "Ingresos: {valueY.value}\nGastos: {openValueY.value}\n";
-        series.sequencedInterpolation = true;
-        series.fillOpacity = 0.3;
-        series.defaultState.transitionDuration = 1000;
-        series.tensionX = 0.8;
-
-        var series2 = chart.series.push(new LineSeries());
-        series2.dataFields.dateX = "date";
-        series2.dataFields.valueY = "gastos";
-        series2.sequencedInterpolation = true;
-        series2.defaultState.transitionDuration = 1500;
-        series2.stroke = chart.colors.getIndex(6);
-        series2.tensionX = 0.8;
-
-        chart.cursor = new XYCursor();
-        chart.cursor.xAxis = dateAxis;
+      }, []);
 
 
-        let scrollbarX = new XYChartScrollbar();
-        scrollbarX.series.push(series);
-        scrollbarX.series.push(series2);
-        chart.scrollbarX = scrollbarX;
+      const fechas = [];
+      for (var i = 1, j = 0; i < 367; i++) {
+        const date = new Date(2020, 0, i);
+        let ingressAmount = 0;        
 
+        if(data[j] && resetTimeToDate(data[j].date).toString() === resetTimeToDate(date).toString()){
+          console.log(data[j]);
+          console.log(date);
+
+          ingressAmount = data[j].ingressAmount;  
+          j++
+        }
+        fechas.push({ date, ingressAmount });
+      }
+
+      chart.data = fechas;
+
+    let dateAxis = chart.xAxes.push(new DateAxis());
+    dateAxis.renderer.grid.template.location = 0;
+    dateAxis.groupData = true;
+
+    let valueAxis = chart.yAxes.push(new ValueAxis());
+    valueAxis.tooltip.disabled = true;
+    valueAxis.renderer.minWidth = 35;
+    valueAxis.title.text = "Ingresos ($)";
+
+    let series = chart.series.push(new LineSeries());
+    series.dataFields.dateX = "date";
+    series.dataFields.valueY = "ingressAmount";
+
+    series.tooltipText = "Ingreso: ${valueY}";
+    chart.cursor = new XYCursor();
+
+    let scrollbarX = new XYChartScrollbar();
+    scrollbarX.series.push(series);
+    chart.scrollbarX = scrollbarX;
+
+    this.chart = chart;
+     
     }
   
     componentWillUnmount() {

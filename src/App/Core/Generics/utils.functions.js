@@ -5,10 +5,13 @@ const getStringDate = ISODate => {
         "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
     ];
     const daysOfWeak = [
-        "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sábado", "Domingo"
+        "Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sábado"
     ];
 
     const date = new Date(ISODate);
+
+
+
 
     const day = date.getDay()+1;
     const dayOfMonth = date.getDate();
@@ -19,7 +22,7 @@ const getStringDate = ISODate => {
 
 }
 const isYearBicester = year => year % 4 === 0;
-const getLastDayOfMonth = (month, year) => {
+const getTotalDaysOfMonth = (month, year) => {
     switch(month){
         case 1: return 31;
         case 2: return (isYearBicester(year)) ? 29 : 28;
@@ -41,7 +44,7 @@ const getMonthRange = date => {
     const month = date.getMonth();
     const year = date.getFullYear();
     const firstDay = 1;
-    const lastDay = getLastDayOfMonth(month, year);
+    const lastDay = getTotalDaysOfMonth(month, year);
     const firstDate = new Date(year, month, firstDay, 0, 0, 0);
     const lastDate = new Date(year, month, lastDay, 23, 59, 59, 99);
     return {
@@ -49,5 +52,10 @@ const getMonthRange = date => {
         lastDate
     };
 }
+const resetTimeToDate = date => {    
+    const newDate = new Date(date);
+    newDate.setHours(0, 0, 0, 0);
+    return newDate;
+}
 
-export {getStringDate, getMonthRange};
+export {getStringDate, getMonthRange, resetTimeToDate};

@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useQuery} from 'react-apollo';
 
 import {
@@ -70,7 +70,7 @@ const ReportSquare = props => {
 
 const ChartSqueleton = () => {
     return <div style={{ width: "100%", height: "400px", padding: "25px"}}>
-                <div style={{ width: "100%", height: "100%", backgroundColor: '#F3F3F3' }}>
+                <div style={{ width: "100%", height: "100%", backgroundColor: '#F3F3F3', paddingTop: '20px  ' }}>
                     <Typography variant="h5" color="textSecondary" style={{textAlign: "center", alignItems: 'center'}}>
                         Cargando... 
                     </Typography>
@@ -83,12 +83,12 @@ const Dashboard = props => {
     const date = new Date();
     const {firstDate, lastDate} = getMonthRange(date);
 
+    const [mounted, setMounted] = useState(true)
 
-    const {data, loading, error, refetch } = useQuery(DashBoardData, {variables: {
+    const {data, loading, refetch } = useQuery(DashBoardData, {variables: {
         before: lastDate,
         after: firstDate
     }});
-
 
     const [Progress, setShowProgress] = useProgress(false);
     const classes = useStyles();
@@ -101,13 +101,19 @@ const Dashboard = props => {
     }, [loading, setShowProgress]);
 
     useEffect(() => {
-        refetch();
-    });
+        if(mounted)
+            refetch();
+        return () => {
+            setMounted(false);
+        }    
+    }, [mounted, refetch]);
 
     const totalIngresos = data && data.totalIngresses && data.totalIngresses.success ? data.totalIngresses.total : 0; 
     const totalGastos = data && data.totalSpends && data.totalSpends.success ? data.totalSpends.total : 0; 
     const ganancias = totalIngresos - totalGastos;
     const porciento = totalIngresos === 0 ? 0 : ganancias * 100 / totalIngresos;
+    const dataIngresses = data && data.ingresses && data.ingresses.success ? data.ingresses.ingress : [];
+    const dataSpends = data && data.spends && data.spends.success ? data.spends.spend : [];
 
     return (
         <>
@@ -148,7 +154,10 @@ const Dashboard = props => {
                     />
                 </Grid> 
                 {<React.Suspense fallback={<ChartSqueleton />}>
-                    <AsyncChart />
+                    <AsyncChart 
+                        dataIngresses={dataIngresses} 
+                        dataSpends={dataSpends}
+                    />
                 </React.Suspense>}
         </Container>
       </>

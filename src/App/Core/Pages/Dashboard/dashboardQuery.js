@@ -12,6 +12,22 @@ const DashBoardData = gql`
             message
             total
         }
+        ingresses(dateRange: {before:$before, after: $after}){
+            success
+            message
+            ingress{
+                ingressAmount
+                date
+            }
+        }
+        spends(dateRange: {before:$before, after: $after}){
+            success
+            message
+            spend{
+                spendamount
+                date
+            }
+        }
     }
 `;
 
