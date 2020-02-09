@@ -12,7 +12,7 @@ const DashBoardData = gql`
             message
             total
         }
-        ingresses(dateRange: {before:$before, after: $after}){
+        ingresses(dateRange: {before:$before, after: $after}, pagination: {start: null, limit: null}){
             success
             message
             ingress{
@@ -20,7 +20,7 @@ const DashBoardData = gql`
                 date
             }
         }
-        spends(dateRange: {before:$before, after: $after}){
+        spends(dateRange: {before:$before, after: $after}, , pagination: {start: null, limit: null}){
             success
             message
             spend{

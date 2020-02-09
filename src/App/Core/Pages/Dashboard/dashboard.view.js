@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import {useQuery} from 'react-apollo';
 
 import {
@@ -11,8 +11,10 @@ import {
     Tooltip
 } from '@material-ui/core';
 
+import moment from 'moment';
+import 'moment/locale/es';
+
 import {useProgress} from '../../Generics';
-import {getMonthRange} from '../../Generics'
 import {DashBoardData} from './dashboardQuery';
 import CountUp from 'react-countup';
 
@@ -80,16 +82,17 @@ const ChartSqueleton = () => {
 
 const Dashboard = props => {
 
-    const date = new Date();
-    const {firstDate, lastDate} = getMonthRange(date);
+    moment.locale('es');
+    const lastDate = useMemo(() => moment(), []);
+    const firstDate = useMemo(() => moment(lastDate).subtract(1, 'month'), [lastDate]);
 
     const [mounted, setMounted] = useState(true)
 
-    const {data, loading, refetch } = useQuery(DashBoardData, {variables: {
+    const {data, loading, refetch, error } = useQuery(DashBoardData, {variables: {
         before: lastDate,
         after: firstDate
     }});
-
+        
     const [Progress, setShowProgress] = useProgress(false);
     const classes = useStyles();
 
@@ -109,13 +112,59 @@ const Dashboard = props => {
     }, [mounted, refetch]);
 
     const totalIngresos = data && data.totalIngresses && data.totalIngresses.success ? data.totalIngresses.total : 0; 
+    console.log(totalIngresos);
+    
     const totalGastos = data && data.totalSpends && data.totalSpends.success ? data.totalSpends.total : 0; 
     const ganancias = totalIngresos - totalGastos;
     const porciento = totalIngresos === 0 ? 0 : ganancias * 100 / totalIngresos;
+    
+    
     const dataIngresses = data && data.ingresses && data.ingresses.success ? data.ingresses.ingress : [];
-    const dataSpends = data && data.spends && data.spends.success ? data.spends.spend : [];
+    
+    const dataMap = new Map();
+    let i = 0;
+    while(i < dataIngresses.length){
+        const dateKey = moment(dataIngresses[i].date).format('L');
+        const ingressAmount = dataIngresses[i].ingressAmount;
 
-    return (
+        if(dataMap.has(dateKey)){
+            const ingress = dataMap.get(dateKey).ingressAmount + ingressAmount;
+            const date = moment(dataIngresses[i].date).format();
+            dataMap.set(dateKey, {
+                date: date, ingressAmount: ingress
+            })
+        }else{
+            dataMap.set(dateKey, {
+                date: moment(dataIngresses[i].date).format(), 
+                ingressAmount: ingressAmount
+            });
+        }
+        i++;
+    }
+
+
+    let currentDate = moment(firstDate);
+    const stopDate = moment(lastDate); 
+    while(currentDate <= stopDate){
+        const dateKey = currentDate.format('L');
+        const ingressAmount = 0;
+
+        if(!dataMap.has(dateKey)){
+            dataMap.set(dateKey, {
+                date: currentDate.format(),
+                ingressAmount
+            });
+        }
+        currentDate = moment(currentDate).add(1, 'days');
+    }
+    
+    const acumDataIngress = [...dataMap.values()].sort((a,b) => {
+        if(a.date < b.date) return -1
+        if(a.date > b.date) return 1;
+        return 0;
+    });
+
+    const resp = (
         <>
             {Progress}
             
@@ -152,16 +201,18 @@ const Dashboard = props => {
                                 </Tooltip>
                         }
                     />
-                </Grid> 
-                {<React.Suspense fallback={<ChartSqueleton />}>
+                </Grid>
+                {
+                <React.Suspense fallback={<ChartSqueleton />}>
                     <AsyncChart 
-                        dataIngresses={dataIngresses} 
-                        dataSpends={dataSpends}
+                        chartIngressDate={acumDataIngress}
                     />
                 </React.Suspense>}
         </Container>
       </>
     );
+
+    return error ? <>Error fula</> :resp;
 
 }
 export default Dashboard;
