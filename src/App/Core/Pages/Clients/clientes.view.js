@@ -6,11 +6,10 @@ import {
     Grid,
     makeStyles    
 } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
+import SearchIcon from '@material-ui/icons/Search';
 
-import {CustomFabButton} from '../../Generics';
-
-import useMessage from '../../Generics/messageAPI';
-import useProgress from '../../Generics/progressAPI';
+import {OpenIconSpeedDial, useMessage, useProgress} from '../../Generics';
 
 import Row from './client/clientRow.view';
 import AddClient from './addcliente.view';
@@ -57,7 +56,7 @@ const ClienteCmp = props => {
         })
         .then(resp => {
             if(!resp.data.upsertClient.success)
-                return new Error();
+                throw new Error();
             else{
                 setMessage("El cliente ha sido guardado.", "success");
                 setShowProgress(false);
@@ -80,7 +79,7 @@ const ClienteCmp = props => {
         }})
         .then(resp => {
             if(!resp.data.removeClient.success)
-                return new Error();
+                throw new Error();
             else
                 setMessage("El cliente ha sido eliminado.", "success"); 
                 setShowProgress(false);
@@ -129,7 +128,18 @@ const ClienteCmp = props => {
                                 </GridItem>
                     })}                    
                 </Grid>
-                <CustomFabButton onClick={() => setOpenAdd(true)}/>
+                <OpenIconSpeedDial actions={
+                    [{
+                        icon: <AddIcon />,
+                        name: "Adicionar cliente", 
+                        onClick:() => setOpenAdd(true)
+                    },{
+                        icon: <SearchIcon />,
+                        name: "Buscar cliente",
+                        onClick:() => alert("TODO: Buscar cliente")
+                    }]
+                }/>
+
                 
             </Container>
             <AddClient 

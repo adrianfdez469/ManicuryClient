@@ -10,7 +10,8 @@ import {
     IconButton,
     ListItemIcon,
     ListItemText,
-    makeStyles
+    makeStyles,
+    Tooltip
 } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
@@ -21,7 +22,11 @@ import { red } from '@material-ui/core/colors';
 const useRowStyles = makeStyles(theme => ({
     card: {
         maxWidth: 345,
-        height: 150         
+        height: 150,
+        cursor: 'pointer',
+        '&:hover': {
+            boxShadow: '0px 5px 10px -1px rgba(0,0,0,0.3), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0 ,0,0,0.12)'
+        }         
     },
     cardHeader: {
         overflow: 'auto'
@@ -76,7 +81,8 @@ const Row = props => {
         </Menu>
     );
 
-    return <>        
+    return <>      
+        <Tooltip title={client.name}>
         <Card className={classes.card}>
             <CardHeader
             avatar={
@@ -98,6 +104,7 @@ const Row = props => {
             </Typography>
             </CardContent>            
         </Card>
+        </Tooltip>  
         {Actions}
     </>
     ;

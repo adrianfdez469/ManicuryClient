@@ -4,10 +4,13 @@ import {LinearProgress} from '@material-ui/core';
 import Header from './Header';
 import Menu from './Menu';
 
+//import Charts from './Pages/Charts';
+import Dashboard from './Pages/Dashboard';
+
 const AsyncClientesPage = React.lazy(() => import('./Pages/Clients'));
 const AsyncWorkTypesPage = React.lazy(() => import('./Pages/WorkTypes'));
-//const AsyncGastosPage = React.lazy(() => import('./Pages/Spends'));
-//const AsyncIngresosPage = React.lazy(() => import('./Pages/Ingress'));
+const AsyncGastosPage = React.lazy(() => import('./Pages/Spends'));
+const AsyncIngresosPage = React.lazy(() => import('./Pages/Ingress'));
 
 const Core = props => {
 
@@ -20,9 +23,10 @@ const Core = props => {
 
     return (
         <>
-            <Header setMenuOpen={openMenu}/>
+            <Header setMenuOpen={openMenu}/>            
             <Menu openMenuState={openMenuState} closeMenu={closeMenu}/>
             <Switch>
+                <Route path={'/'} component={Dashboard} exact/>
                 <Route path={'/clientes'} render={
                     () => {
                         return <Suspense fallback={Progress}>
@@ -37,20 +41,20 @@ const Core = props => {
                                 </Suspense>    
                     }
                 } />    
-                {/*<Route path={'/gastos'} render={
+                <Route path={'/gastos'} render={
                     () => {
                         return <Suspense fallback={Progress}>
-                                    <AsyncWorkTypesPage />
+                                    <AsyncGastosPage />
                                 </Suspense>    
                     }
                 } />    
                 <Route path={'/ingresos'} render={
                     () => {
                         return <Suspense fallback={Progress}>
-                                    <AsyncWorkTypesPage />
+                                    <AsyncIngresosPage />
                                 </Suspense>    
                     }
-                } />  */}  
+                } />  
 
                 <Redirect to="/" />
             </Switch>

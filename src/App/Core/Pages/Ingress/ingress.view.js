@@ -9,18 +9,19 @@ import {
 import AddIcon from '@material-ui/icons/Add';
 import SearchIcon from '@material-ui/icons/Search';
 
-
 import {OpenIconSpeedDial, useMessage, useProgress} from '../../Generics';
 
-import Row from './worktype/worktypeRow.view';
-import AddWorkType from './addworktype.view';
-import {getWorkTypes, editWorkTypeMutation, removeWorkTypeMutation} from './worktypeQuerys';
+import Row from './ingress/ingressRow.view';
+import AddIngress from './addingress.view';
+import {editIngressMutation, getIngresses, removeIngressMutation} from './ingressQuerys';
 
 
 
 const useStyles = makeStyles(theme => ({
     container: {
-        padding: theme.spacing(1)       
+        padding: theme.spacing(1),       
+        //backgroundColor: theme.palette.background.paper,
+        //height: '100vh'        
     }
 }));
 
@@ -30,36 +31,40 @@ const GridItem = props => {
             </Grid>
 };
 
-const WorkTypeCmp = props => {
+const IngressCmp = props => {
 
     const classes = useStyles();
     const [openAdd, setOpenAdd] = React.useState(false);
-    const [editWorktype, setEditWorktype] = React.useState(null);
-    const {data, loading, refetch, error} = useQuery(getWorkTypes);
+    const [editIngress, setEditIngress] = React.useState(null);
+    const {data, loading, refetch, error} = useQuery(getIngresses, {variables: {
+        start: 0, limit: 20
+    }});
     
-    const [fnSave] = useMutation(editWorkTypeMutation);
-    const [fnRemove] = useMutation(removeWorkTypeMutation);
+    const [fnSave] = useMutation(editIngressMutation);
+    const [fnRemove] = useMutation(removeIngressMutation);
     const [Message, setMessage] = useMessage();
     const [Progress, setShowProgress] = useProgress();
-    
 
-    const saveWorktype = (workTypeId, wtcategoryId,name, price) => {
+
+    const saveIngress = (ingressId, worktypeId, clientId, ingressAmmount, tip, date) => {
         setOpenAdd(false);
-        setShowProgress(true);
         
+        setShowProgress(true);
         fnSave({
             variables: {
-                workTypeId, 
-                wtcategoryId,
-                name, 
-                price
+                ingressId,
+                worktypeId,
+                clientId,
+                ammount: ingressAmmount,
+                tip,
+                date
             }
         })
         .then(resp => {
-            if(!resp.data.upsertWorkType.success)
+            if(!resp.data.upsertIngress.success)
                 throw new Error();
             else{
-                setMessage("El tipo de trabajo ha sido guardado.", "success");
+                setMessage("El ingreso ha sido guardado.", "success");
                 setShowProgress(false);
             }
         })
@@ -68,21 +73,21 @@ const WorkTypeCmp = props => {
         })
         .catch(err => {
             //console.log(err);
-            setMessage("Ha ocurreido un error. No se ha podido guardar el tipo de trabajo.", "error");
+            setMessage("Ha ocurreido un error. No se ha podido salvar el ingreso.", "error");
             setShowProgress(false);            
         });
     };
 
-    const removeWorktype = workTypeId => {
+    const removeIngress = ingressId => {
         setShowProgress(true);
         fnRemove({variables:{
-            workTypeId
+            ingressId
         }})
         .then(resp => {
-            if(!resp.data.removeWorkType.success)
+            if(!resp.data.removeIngress.success)
                 throw new Error();
             else
-                setMessage("El tipo de trabajo ha sido eliminado.", "success"); 
+                setMessage("El ingreso ha sido eliminado.", "success"); 
                 setShowProgress(false);
         })
         .then(() => {
@@ -90,7 +95,7 @@ const WorkTypeCmp = props => {
         })
         .catch(err => {
             //console.log(err);
-            setMessage("Ocurrio un error eliminando el tipo de trabajo.", "error");
+            setMessage("Ocurrio un error eliminando el ingreso.", "error");
             setShowProgress(false);            
         });
     };
@@ -116,48 +121,49 @@ const WorkTypeCmp = props => {
             <Container maxWidth="md" className={classes.container}>
                 
                 <Grid container spacing={2}>
-                    {data && data.worktypes && data.worktypes.worktype.map(wt => {
-                        
-                        return <GridItem key={wt.id}>
+                    {data && data.ingresses && data.ingresses.ingress.map(ingress => {
+                        return <GridItem key={ingress.id}>
                                     <Row
-                                        worktype={wt}
-                                        remove={() => removeWorktype(wt.id)}
+                                        ingress={ingress}
+                                        remove={() => removeIngress(ingress.id)}
                                         edit={() => {
                                             setOpenAdd(true);
-                                            setEditWorktype(wt);
+                                            setEditIngress(ingress);
                                         }}
                                     />
                                 </GridItem>
                     })}                    
                 </Grid>
                 <OpenIconSpeedDial actions={
-                     [{
+                    [{
                         icon: <AddIcon />,
                         name: "Adicionar cliente", 
                         onClick:() => setOpenAdd(true)
                     },{
                         icon: <SearchIcon />,
                         name: "Buscar cliente",
-                        onClick:() => alert("TODO: Buscar tipo de trabajo")
+                        onClick:() => alert("TODO: Buscar cliente")
                     }]
                 }/>
+
                 
             </Container>
-            <AddWorkType 
-                open={openAdd}
-
+            <AddIngress 
+                open={openAdd} 
                 handleCancel={() => {
                     setOpenAdd(false);
-                    setEditWorktype(null);
+                    setEditIngress(null);
                 }} 
-                handleOk={ (id, wtcategoryId,name, price) => {
-                    saveWorktype(id, wtcategoryId,name, price);
+                handleOk={ (ingressId, worktypeId, clientId, ingressAmmount, tip, date) => {
+                    saveIngress(ingressId, worktypeId, clientId, ingressAmmount, tip, date);
                     setOpenAdd(false);
-                    setEditWorktype(null);
-                }} 
-                edit={editWorktype}/>
+                    setEditIngress(null);
+                }}
+                edit={editIngress}
+                
+            />
             {Message}
     </>
 
 }
-export default WorkTypeCmp;
+export default IngressCmp;

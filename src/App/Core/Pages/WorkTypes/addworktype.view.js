@@ -5,34 +5,63 @@ import {
     DialogContent,
     TextField,
     DialogActions,
-    Button
+    Button,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Grid,
+    makeStyles
 } from '@material-ui/core';
 
-import NumberInput from '../../Generics/numberInput.view';
+import {useQuery} from 'react-apollo';
+
+import {NumberInput} from '../../Generics';
 import useWorktype from './useWorktype';
+
+import {getWorkTypeCategories} from './worktypeQuerys';
+
+const useStyles = makeStyles(theme => ({
+    formControl: {
+      //margin: theme.spacing(1),
+      minWidth: 120,
+      width: '100%',
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(0.5)
+    },
+    selectEmpty: {
+      //marginTop: theme.spacing(2),
+    }
+  }));
 
 const AddWorkType = props => {
 
+    const classes = useStyles();
+
     const {handleOk, handleCancel, open, edit} = props;
 
-    const {useNameState, usePriceState} = useWorktype();
+    const {data} = useQuery(getWorkTypeCategories);
     
+    const {useCategoryState, useNameState, usePriceState} = useWorktype();
+    
+    const [categoryState, setCategory] = useCategoryState;
     const [nameState, setName] = useNameState;
     const [priceState, setPrice] = usePriceState;
     
 
     React.useEffect(() => {
         if(edit){
+            setCategory(edit.category.id)
             setName(edit.name);
             setPrice(edit.price);
         }else{
+            setCategory(null)
             setName('');
             setPrice(0);
         }
 
-    }, [open, edit, setName, setPrice]);
+    }, [open, edit, setName, setPrice, setCategory, data]);
 
-    
     return <Dialog 
                 open={open} 
                 onClose={handleCancel} 
@@ -40,8 +69,32 @@ const AddWorkType = props => {
             >
                 <DialogTitle id="form-dialog-title">Adicionar tipo de trabajo</DialogTitle>
                 <DialogContent>
+
+                    <FormControl className={classes.formControl}>
+                        <InputLabel shrink id="categoria">Categoria</InputLabel>
+                        <Select
+                            autoFocus   
+                            labelId="categoria"
+                            id="categoria-placeholder"
+                            value={categoryState}
+                            onChange={event => setCategory(event.target.value)}
+                            displayEmpty
+                            className={classes.selectEmpty}
+                        >                            
+                            {
+                                data && data.worktypecategory && data.worktypecategory.worktypecategory.map(wtc => {
+                                    return <MenuItem value={wtc.id} key={wtc.id}>
+                                        <Grid container>
+                                            <div style={{backgroundColor: wtc.color, margin: '0 1rem', width: "1rem", height: "1rem", borderRadius: "50%"}} />
+                                            {wtc.name}
+                                        </Grid>
+                                    </MenuItem>
+                                })
+                            }
+                        </Select>
+                    </FormControl>
+
                     <TextField
-                        autoFocus
                         margin="dense"
                         label="Nombre"
                         type="text"
@@ -62,6 +115,7 @@ const AddWorkType = props => {
                 </Button>
                 <Button onClick={() => handleOk( 
                                             (edit) && edit.id,
+                                            categoryState,
                                             nameState, 
                                             priceState)
                                 } 

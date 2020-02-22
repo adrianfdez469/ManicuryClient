@@ -1,4 +1,5 @@
 import React, {useContext} from 'react';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import {ApolloProvider} from 'react-apollo';
 //import {ApolloClient, ApolloLink, HttpLink, InMemoryCache} from 'apollo-boost';
 import ApolloClient from 'apollo-boost';
@@ -7,6 +8,8 @@ import {graphQlEndPoint} from './utils';
 import LoginProvider, {LoginContext} from './Login/login.model';
 import Login from './Login/login.view';
 import Core from './Core/core.view';
+
+
 
 const App = () => {
   
@@ -40,6 +43,7 @@ const Main = () => {
 
   return ( 
     <ApolloProvider client={client}>
+      <CssBaseline />
       {AppCmp}
     </ApolloProvider>
   );
