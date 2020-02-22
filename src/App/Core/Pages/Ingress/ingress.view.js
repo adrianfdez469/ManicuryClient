@@ -47,8 +47,6 @@ const IngressCmp = props => {
 
 
     const saveIngress = (ingressId, worktypeId, clientId, ingressAmmount, tip, date) => {
-        console.log(clientId);
-        
         setOpenAdd(false);
         
         setShowProgress(true);

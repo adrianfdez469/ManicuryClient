@@ -60,7 +60,7 @@ const AddIngress = props => {
     React.useEffect(() => {
         if(edit){
             setWtState(edit.workType.id);
-            setClientState(edit.client.id);
+            setClientState(edit.client && edit.client.id);
             setAmmountState(edit.ingressAmount);
             setTipState(edit.tip);
             setDateState(edit.date);
@@ -105,7 +105,10 @@ const AddIngress = props => {
                             {
                                 dataW && dataW.worktypes && dataW.worktypes.worktype.map(wt => {
                                     return <MenuItem value={wt.id} key={wt.id}>
-                                        {wt.name}
+                                        <Grid container>
+                                            <div style={{backgroundColor: wt.category.color, margin: '0 1rem', width: "1rem", height: "1rem", borderRadius: "50%"}} />
+                                            {wt.name}
+                                        </Grid>
                                     </MenuItem>
                                 })
                             }

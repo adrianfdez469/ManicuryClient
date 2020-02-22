@@ -11,7 +11,8 @@ import {
     ListItemIcon,
     ListItemText,
     makeStyles,
-    Tooltip
+    Tooltip,
+    Grid
 } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
@@ -80,32 +81,37 @@ const Row = props => {
     );
 
     return <>    
-        <Tooltip title={ingress.workType.name}>
-            <Card className={classes.card}>
+         <Tooltip title={ingress.workType.category.name +': '+ ingress.workType.name} >
+            <Card className={classes.card} >
                 <CardHeader
                     action={
                         <IconButton aria-label="settings" onClick={openMenu}>
-                            <MoreVertIcon />
+                            <MoreVertIcon style={{color: ingress.workType.category.color}}/>
                         </IconButton>
                     }
-                    title={`${ingress.workType.name}`}
-                    
-                    subheader={getStringDate(ingress.date)}
-                />
-                <CardContent className={classes.cardContent}>
-                    <Typography variant="subtitle1" color="textSecondary" component="p" style={{position:'static'}}>
-                        {`Ingreso: $${ingress.ingressAmount}`}
-                    </Typography>
-                    <Typography variant="subtitle1" color="textSecondary" component="p" style={{position:'static'}}>
-                        {`Propina: $${ingress.tip}`}
-                    </Typography>
-                    {
-                        ingress.client && 
-                        <Typography variant="subtitle1" color="textSecondary" component="p" style={{position:'static'}}>
-                            {`Cliente: ${ingress.client.name}`}
+                    title={`${(ingress.workType.name.length > 18) ? ingress.workType.name.substring(0, 18) + '...' : ingress.workType.name}`}                    
+                    subheader={
+                        <Typography variant="subtitle2" color="textSecondary">
+                            {getStringDate(ingress.date)}
                         </Typography>
                     }
-                    
+                />
+                <CardContent className={classes.cardContent}>                    
+                    <Grid container spacing={2}>
+                        <Grid item xs={6}>
+                            <Typography variant="h6" color="textPrimary" component="p" style={{position:'static'}}>
+                                {`Ingreso: $${ingress.ingressAmount}`}
+                            </Typography>    
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Typography variant="h6" color="textSecondary" component="p" style={{position:'static'}}>
+                                {`Propina: $${ingress.tip}`}
+                            </Typography>
+                        </Grid>
+                    </Grid>                    
+                    <Typography variant="subtitle1" color="textSecondary" component="p" style={{position:'static'}}>
+                        {`Cliente: ${ingress.client ? ingress.client.name : ''}`}
+                    </Typography>
                 </CardContent>            
             </Card>
         </Tooltip>    

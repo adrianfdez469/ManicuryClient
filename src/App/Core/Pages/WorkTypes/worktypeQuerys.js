@@ -1,7 +1,7 @@
 import {gql} from 'apollo-boost';
 const editWorkTypeMutation = gql`
-mutation ($workTypeId: ID, $name: String!, $price: Float!) {
-    upsertWorkType(workTypeId: $workTypeId, name: $name, price: $price){            
+mutation ($workTypeId: ID, $wtcategoryId: ID!, $name: String!, $price: Float!) {
+    upsertWorkType(workTypeId: $workTypeId, wtcategoryId: $wtcategoryId, name: $name, price: $price){            
         success
         message
         worktype {
@@ -30,9 +30,28 @@ query {
             id
             name
             price
+            category {
+                id
+                name
+                color
+            }
         }
     }
 }
 `;
 
-export {getWorkTypes, removeWorkTypeMutation, editWorkTypeMutation};
+const getWorkTypeCategories = gql`
+    query {
+        worktypecategory {
+            success
+            message
+            worktypecategory{
+                id
+                name
+                color
+            }
+        }
+    }
+`;
+
+export {getWorkTypeCategories, getWorkTypes, removeWorkTypeMutation, editWorkTypeMutation};

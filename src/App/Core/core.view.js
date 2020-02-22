@@ -23,7 +23,7 @@ const Core = props => {
 
     return (
         <>
-            <Header setMenuOpen={openMenu}/>
+            <Header setMenuOpen={openMenu}/>            
             <Menu openMenuState={openMenuState} closeMenu={closeMenu}/>
             <Switch>
                 <Route path={'/'} component={Dashboard} exact/>

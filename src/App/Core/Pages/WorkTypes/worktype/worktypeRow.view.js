@@ -15,7 +15,6 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import { green } from '@material-ui/core/colors';
 
 const useRowStyles = makeStyles(theme => ({
     card: {
@@ -28,9 +27,6 @@ const useRowStyles = makeStyles(theme => ({
     },
     cardHeader: {
         overflow: 'auto'
-    },
-    avatar: {
-        backgroundColor: green[500]
     }
 }));
   
@@ -84,8 +80,8 @@ const Row = props => {
             <Card className={classes.card}>
                 <CardHeader
                 avatar={
-                    <Avatar aria-label="recipe" className={classes.avatar}>
-                        {worktype.name[0]}
+                    <Avatar aria-label="recipe" style={{backgroundColor: worktype.category.color}}>
+                        {worktype.category.name[0]}
                     </Avatar>
                 }
                 action={

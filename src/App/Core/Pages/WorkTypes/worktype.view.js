@@ -43,13 +43,16 @@ const WorkTypeCmp = props => {
     const [Progress, setShowProgress] = useProgress();
     
 
-    const saveWorktype = (workTypeId, name, price) => {
+    const saveWorktype = (workTypeId, wtcategoryId,name, price) => {
         setOpenAdd(false);
         setShowProgress(true);
         
         fnSave({
             variables: {
-                workTypeId, name, price
+                workTypeId, 
+                wtcategoryId,
+                name, 
+                price
             }
         })
         .then(resp => {
@@ -114,6 +117,7 @@ const WorkTypeCmp = props => {
                 
                 <Grid container spacing={2}>
                     {data && data.worktypes && data.worktypes.worktype.map(wt => {
+                        
                         return <GridItem key={wt.id}>
                                     <Row
                                         worktype={wt}
@@ -140,13 +144,14 @@ const WorkTypeCmp = props => {
                 
             </Container>
             <AddWorkType 
-                open={openAdd} 
+                open={openAdd}
+
                 handleCancel={() => {
                     setOpenAdd(false);
                     setEditWorktype(null);
                 }} 
-                handleOk={ (id, name, price) => {
-                    saveWorktype(id, name, price);
+                handleOk={ (id, wtcategoryId,name, price) => {
+                    saveWorktype(id, wtcategoryId,name, price);
                     setOpenAdd(false);
                     setEditWorktype(null);
                 }} 
