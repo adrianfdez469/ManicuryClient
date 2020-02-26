@@ -14,6 +14,7 @@ import {
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
+import TodayIcon from '@material-ui/icons/Today';
 import Skeleton from '@material-ui/lab/Skeleton';
 
 import moment from 'moment';
@@ -25,11 +26,11 @@ import {getWorkTypeCategories} from '../WorkTypes/worktypeQuerys';
 import CountUp from 'react-countup';
 
 import FilterView from './Search/filter.view';
-import CartContainer from '../Charts/chartContainer.view';
+import ChartContainer from '../Charts/chartContainer.view';
 
 const LazyIngressChart = React.lazy(() => import('../Charts/Ingresses/IngressChart.view'));
 const LazyWorkTypeChart = React.lazy(() => import('../Charts/Worktypes/worktypesChart.view'));
-
+const LazyCalendar = React.lazy(() => import('../Charts/Days/calendar.view'));
 
 
 const useStyles = makeStyles(theme => ({
@@ -47,7 +48,11 @@ const useStyles = makeStyles(theme => ({
     },
     cardDias: {
         backgroundColor: theme.palette.primary.dark,
-        color: theme.palette.getContrastText(theme.palette.primary.dark)
+        color: theme.palette.getContrastText(theme.palette.primary.dark),
+        cursor: 'pointer',
+        '&:hover': {
+            boxShadow: '0px 5px 10px -1px rgba(0,0,0,0.5), 0px 1px 1px 0px rgba(0,0,0,0.5), 0px 1px 3px 0px rgba(0 ,0,0,0.5)'
+        }
     },
     cardGanancias: {
         backgroundColor: theme.palette.info.light,
@@ -58,7 +63,7 @@ const useStyles = makeStyles(theme => ({
         color: theme.palette.getContrastText(theme.palette.success.light),
         cursor: 'pointer',
         '&:hover': {
-            boxShadow: '0px 5px 10px -1px rgba(0,0,0,0.3), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0 ,0,0,0.12)'
+            boxShadow: '0px 5px 10px -1px rgba(0,0,0,0.5), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0 ,0,0,0.12)'
         }  
     },
     cardCantidadIngresos: {
@@ -66,7 +71,7 @@ const useStyles = makeStyles(theme => ({
         color: theme.palette.getContrastText(theme.palette.success.dark),
         cursor: 'pointer',
         '&:hover': {
-            boxShadow: '0px 5px 10px -1px rgba(0,0,0,0.3), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0 ,0,0,0.12)'
+            boxShadow: '0px 5px 10px -1px rgba(0,0,0,0.5), 0px 1px 1px 0px rgba(0,0,0,0.50), 0px 1px 3px 0px rgba(0 ,0,0,0.50)'
         }   
     },
     fab: {
@@ -202,6 +207,7 @@ const Dashboard = props => {
     const [mounted, setMounted] = useState(true)
     const [openedIngress, setOpenedIngress] = useState(false);
     const [openedCantTrabajos, setOpenedCantTrab] = useState(false);
+    const [openDays, setOpenDays] = useState(false);
     
     //const [categoryState, setCategoryState] = useState(null);
     const [categoryState, setCategoryState] = useState([]);
@@ -256,6 +262,7 @@ const Dashboard = props => {
     const dataSpends = data && data.spends && data.spends.success ? data.spends.spend : [];
     const cantIngresses = dataIngresses.length;
     const cantSpends = dataSpends.length;
+    
     
     const worksTypeMap = new Map();
     const dataMap = new Map();
@@ -395,16 +402,19 @@ const Dashboard = props => {
                         secondaryText={diasNoTrabajados}
                         secondaryconcept="Días no trabajados"
 
-                        onClick={() => alert('mostrar')}
+                        onClick={() => setOpenDays(true)}
                         
                     /> 
                 </Grid>
                 
 
-                <CartContainer
+                <ChartContainer
                     open={openedIngress}
                     handleClose={() => setOpenedIngress(false)}
                     title="Ingresos del período"
+                    htmlHelpContent={<>
+                        <p>{"En esta gráfica se muestran los ingresos diario/semanles/mensuales/anuales"}</p>
+                    </>}
                 >
                     <Suspense fallback={
                         <Skeleton width={'100%'} height={500}>
@@ -415,12 +425,18 @@ const Dashboard = props => {
                             chartIngressDate={acumDataIngress}
                         />
                     </Suspense>
-                </CartContainer>
+                </ChartContainer>
 
-                <CartContainer
+                <ChartContainer
                     open={openedCantTrabajos}
                     handleClose={() => setOpenedCantTrab(false)}
                     title="Tipos de trabajos"
+                    htmlHelpContent={<>
+                        <ul>
+                            <li><b>{"Gráfica por ingresos"}</b><br/>{"En esta gráfica se muestran por cada tipo de trabajo los ingresos realizados"}</li>
+                            <li><b>{"Gráfica por cantidades"}</b><br/>{"En esta gráfica se muestran por cada tipo de trabajo la cantidad realizada"}</li>
+                        </ul>
+                    </>}
                 >
                     <Suspense fallback={
                         <Skeleton width={'100%'} height={500}>
@@ -431,7 +447,30 @@ const Dashboard = props => {
                             workTypesQuantity={workTypesQuantity}                        
                         />                    
                     </Suspense>
-                </CartContainer>
+                </ChartContainer>
+
+
+                <ChartContainer
+                    open={openDays}
+                    handleClose={() => setOpenDays(false)}
+                    title="Dias trabajados y no trabajados"
+                    htmlHelpContent={<>
+                        <p>{"En este calendario se muestran los dias trabajados y no trabajados en el mes seleccionado."}</p>
+                        <p>{"En cada dia aparecen cada uno de los trabajos realizados. Para conocer más pase el ratón sobre estos."}</p>
+                    </>}
+                >
+                    <Suspense fallback={
+                        <Skeleton width={'100%'} height={500} style={{maxWidth: '900px', margin: '40px auto'}}>
+                            <TodayIcon style={{width: '100%', height: '100%'}} color="disabled"/>
+                        </Skeleton>
+                    }>
+                        <LazyCalendar 
+                            data={dataIngresses}
+                            start={useDates ? moment(firstDate).format('YYYY-MM-DD') : undefined}
+                            end={useDates ? moment(lastDate).format('YYYY-MM-DD') : undefined}
+                        />
+                    </Suspense>
+                </ChartContainer>
                 
             </Container>
         

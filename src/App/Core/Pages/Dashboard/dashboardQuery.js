@@ -25,6 +25,7 @@ const DashBoardData = gql`
                     category{
                         id
                         name
+                        color
                     }
                 }
             }
